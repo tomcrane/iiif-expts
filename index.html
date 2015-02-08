@@ -12,12 +12,17 @@
   
   <h1>An image that is forbidden</h1>
   <img id="img3" src="712.gif" />
+  
+  <h1>Results</h1>
+  <p id="results"></p>
 </body>
 
 <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 <script>
 $('img').bind('error', function (e) {
-    console.log('image error: ' + this.src);
+    $('#results').append(this.id + ' failed to load<br/>');
+    var testImg = $.get(this.src); // yuk
+    $('#results').append(this.id + ' reason: ' + testImg.status + ', ' + testImg.statusText + '<br/>');
 });
 
 $('#img1').attr('src', 'http://iiif.io/img/logo-iiif-34x30.png');
