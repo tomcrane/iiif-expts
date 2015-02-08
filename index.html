@@ -20,6 +20,7 @@ $('img').bind('error', function () {
     $('#results').append(this.id + ' failed to load<br/>');
     var jqxhr = $.get(this.src).fail(function(e) {
       $('#results').append('reason: ' + e.status + ', ' + e.statusText + '<br/>');
+      $('#results').append('headers: <br/>' + e.getAllResponseHeaders().replace(/\n/g, '<br/>'));
   });
 });
 
