@@ -22,10 +22,9 @@
 $('img').bind('error', function (e) {
     $('#results').append(this.id + ' failed to load<br/>');
     var jqxhr = $.get( this.src, function() {
-      $('#results').append(this.id + ' worked second time<br/>');
   })
   .fail(function(eobj) {
-      $('#results').append(this.id + eobj + ' worked second time<br/>');
+      $('#results').append(this.id + eobj + 'failed<br/>');
   });
     $('#results').append(this.id + ' reason: ' + jqxhr.status + ', ' + jqxhr.statusText + '<br/>');
 });
