@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>img tests</title>
+</head>
+<body>
+  <h1>An image that works</h1>
+  <img src="http://iiif.io/img/logo-iiif-34x30.png" />
+  
+  <h1>An image that is missing</h1>
+  <img src="http://iiif.io/img/logo-iiif-not-there.png" />
+  
+  <h1>An image that is forbidden</h1>
+  <img src="http://wellcomelibrary.org/confine/b17222795/0/8f41a2bf-99d4-4f67-a945-d64f310f6929/jp2?boundingWidth=1000&boundingHeight=1000&origWidth=3965&origHeight=2643" />
+</body>
+
+<script src="https://code.jquery.com/jquery-1.11.2.min.js" />
+<script>
+jQuery('img').bind('error', function (e) {
+    console.log('image error: ' + this.src);
+});
+</script>
+</html>
