@@ -16,10 +16,10 @@
 
 <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 <script>
-$('img').bind('error', function (e) {
+$('img').bind('error', function () {
     $('#results').append(this.id + ' failed to load<br/>');
-    var jqxhr = $.get(this.src).fail(function(eobj) {
-      $('#results').append(this.id + 'failed: ' + eobj.status + ', ' + eobj.statusText + '<br/>');
+    var jqxhr = $.get(this.src).fail(function(e) {
+      $('#results').append('reason:: ' + e.status + ', ' + e.statusText + '<br/>');
   });
 });
 
