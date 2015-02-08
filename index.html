@@ -21,8 +21,13 @@
 <script>
 $('img').bind('error', function (e) {
     $('#results').append(this.id + ' failed to load<br/>');
-    var testImg = $.get(this.src); // yuk
-    $('#results').append(this.id + ' reason: ' + testImg.status + ', ' + testImg.statusText + '<br/>');
+    var jqxhr = $.get( this.src, function() {
+      $('#results').append(this.id + ' worked second time<br/>');
+  })
+  .fail(function(eobj) {
+      $('#results').append(this.id + eobj + ' worked second time<br/>');
+  });
+    $('#results').append(this.id + ' reason: ' + jqxhr.status + ', ' + jqxhr.statusText + '<br/>');
 });
 
 $('#img1').attr('src', 'http://iiif.io/img/logo-iiif-34x30.png');
