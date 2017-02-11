@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>getThumbnail()</title>
+    <style>
+        #config input { width: 40px; }
+        #output img { float:left; margin:20px; }
+        hr { clear:both;}
+        body { font-family: sans-serif}
+        pre { display: inline-block }
+        #cvsGetThumb { font-size: larger}
+    </style>
+</head>
+<body>
+    <h2>iiifResource.getThumbnail(preferred, min, max, follow)</h2>
+    <div id="config">
+
+    <ul>
+        <li>Set <strong>preferred</strong> to 0 if you don't need a specific size thumbnail (more chance of speedy thumbs). Otherwise, <strong>preferred</strong> is the size you'd like to display.</li>
+        <li><strong>min</strong> and <strong>max</strong> determine the range you will accept around <strong>preferred</strong> (min <= preferred <= max).</li>
+        <li><strong>follow</strong> is the number of additional ajax requests the client can make per thumbnail to get the size you ask for, e.g., loading info.jsons</li>
+        <li><strong>preferred</strong> defines a square, but this can be extended to take a non-square size { width: nn, height: nn } later.</li>
+    </ul>
+        <hr/>
+        preferred: <input type="text" name="preferred" id="preferred" value="150">
+        min: <input type="text" name="min" id="min" value="100">
+        max: <input type="text" name="max" id="max" value="500">
+        follow: <input type="text" name="follow" id="follow" value="0">
+        <button id="reset">Go</button>
+    </div>
+    <div>For each canvas in <a href="manifest.json">manifest.json</a>: <pre id="cvsGetThumb"></pre></div>
+    <div id="output">
+
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="iiif.js"></script>
+
+    <script>
+    
+    $(function() {
+        $.ajaxSetup({ cache: false });
+        $("#reset").click(function(){
+            $.getJSON("manifest.json").done(function (manifest) {
+                IIIF.wrap(manifest);
+                $("#output").empty();
+                var config = getConfig();
+                $("#cvsGetThumb").html("canvas.getThumbnail(" + config.preferred + ", " + config.min + ", " + config.max + ", " + config.follow + ")");
+                manifest.sequences[0].canvases.forEach(function(canvas){
+                    addCanvas(canvas, config);
+                })
+            });
+        });
+        $("#reset").click();
+    });
+
+    function getConfig(){
+        return {
+            preferred: parseInt($("#preferred").val()),
+            min: parseInt($("#min").val()),
+            max: parseInt($("#max").val()),
+            follow: parseInt($("#follow").val())        
+        }
+    }
+
+    function addCanvas(canvas, config){
+        var thumb = canvas.getThumbnail(config.preferred, config.min, config.max, config.follow);
+        if(!thumb) thumb = getPlaceholderThumb(config.preferred);
+        var $canvasInfo = $("<div/>").appendTo("#output");
+        $canvasInfo.append("<h2>" + canvas.label + "</h2>");
+        $canvasInfo.append("<div class='desc'>" + canvas.description + "</div>");
+        var $thumb = $("<img/>").appendTo($canvasInfo);
+        if(thumb.width) $thumb.attr("width", thumb.width);
+        if(thumb.height) $thumb.attr("height", thumb.height);
+        $thumb.attr("title", JSON.stringify(canvas, null, "  "));
+        $thumb.bind('error', function (e) {
+            $(this).parent().append("<span class='error'>Image tag fired an error for thumb.url</span>");
+        });
+        $canvasInfo.append("<pre class='thumbjson'>" + JSON.stringify(thumb, null, '  ') + "</pre><hr/>");
+        $thumb.attr("src", thumb.url);
+    }
+
+    function getPlaceholderThumb(preferred){
+        return {
+            url: "placeholder.png",
+            width: preferred,
+            height: preferred
+        }
+    }
+    
+    </script>
+</body>
+</html>
