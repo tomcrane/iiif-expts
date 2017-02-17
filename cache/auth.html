@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="setImage();">load image</button>
+    <button onclick="doClickthroughViaWindow();">Do Clickthrough</button>
+    <hr/>
+    <img id="theImage" src="" data-url="https://dlcs.io/iiif-img/wellcome/1/680a1750-beae-4a03-ace9-cd251938bb11/full/!1024,1024/0/default.jpg" />
+
+
+    <script>
+    
+        var img = document.getElementById("theImage");
+
+        function setImage(){
+            if(!img.src || img.complete){
+                var src = img.getAttribute("data-url");
+                img.setAttribute('src', src + '#' + new Date().getTime());
+            }
+        }
+
+        function doClickthroughViaWindow(ev) {
+
+            var win = window.open("https://dlcs.io/auth/2/clickthrough"); 
+            var pollTimer = window.setInterval(function () {
+                if (win.closed) {
+                    window.clearInterval(pollTimer);
+                    setImage(); 
+                }
+            }, 500);
+        }
+
+        
+    </script>
+</body>
+</html>

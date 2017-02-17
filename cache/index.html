@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <img id="theImage" width="1024" height="1002" src="" data-url="https://dlcs.io/thumbs/wellcome/1/1fbb92b8-15cb-44e9-81f4-223b35b1a7ec/full/1024,1002/0/default.jpg" >
+    
+    <script>
+    
+        var img = document.getElementById("theImage");
+        img.addEventListener("load", loaded);
+
+        function setImage(){
+            if(!img.src || img.complete){
+                var src = img.getAttribute("data-url");
+                img.setAttribute('src', src + '#' + new Date().getTime());
+            }
+        }
+       
+        setImage();
+
+        function loaded() {
+            console.log("loaded " + img.src);
+            window.setTimeout(setImage, 2000);
+        }
+
+    </script>
+</body>
+</html>
